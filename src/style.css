@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter';
+  user-select: none;
+}
+
+body {
+  background-color: #09090b;
+}
+h1 {
+  color: #fafafa;
+}
+.card {
+  padding: 24px 32px;
+}
+
+button {
+  background-color: #fafafa;
+  color: #09090b;
+  border-radius: 10px;
+  padding: 12px 16px;
+  border: none;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
