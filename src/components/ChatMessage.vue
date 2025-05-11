@@ -95,7 +95,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="chatMessage" v-if="isVisible" ref="$this">
+  <div class="chatMessage" v-if="isVisible" ref="$element">
     <span>
       <span class="messageTime">{{ time }}</span>
       <span class="userBadges">
