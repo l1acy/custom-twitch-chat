@@ -87,7 +87,7 @@ onMounted(() => {
   )
   setTimeout(
     () => {
-      $this.classList.add('messageOut')
+      $element.classList.add('messageOut')
     },
     15 * 1000 - 250
   )
