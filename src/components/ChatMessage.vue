@@ -82,7 +82,7 @@ onMounted(() => {
     () => {
       isVisible.value = false
     },
-    15 * 1000
+    900
   )
 });
 </script>
