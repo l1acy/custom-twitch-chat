@@ -77,6 +77,13 @@ function sanitizeText(text) {
 
 onMounted(() => {
   sanitizedText.value = sanitizeText(formatText())
+
+  setTimeout(
+    () => {
+      isVisible.value = false
+    },
+    15 * 1000
+  )
 });
 </script>
 
