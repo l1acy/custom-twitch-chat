@@ -14,7 +14,7 @@ const props = defineProps({
 
 const isVisible = ref(true);
 const sanitizedText = ref('')
-const $element = ref()
+const $element = ref(null)
 
 function formatText() {
   if (!props.emotes) return props.text;
@@ -81,9 +81,9 @@ onMounted(() => {
 
   setTimeout(
     () => {
-      $element.classList.add('messageOut')
+      $element.value?.classList.add('messageOut')
     },
-    15 * 1000 - 250
+    14 * 1000
   )
   setTimeout(
     () => {
