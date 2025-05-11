@@ -14,6 +14,7 @@ const props = defineProps({
 
 const isVisible = ref(true);
 const sanitizedText = ref('')
+const $element = ref()
 
 function formatText() {
   if (!props.emotes) return props.text;
@@ -82,13 +83,19 @@ onMounted(() => {
     () => {
       isVisible.value = false
     },
-    900
+    15 * 1000
+  )
+  setTimeout(
+    () => {
+      $this.classList.add('messageOut')
+    },
+    15 * 1000 - 250
   )
 });
 </script>
 
 <template>
-  <div class="chatMessage" v-if="isVisible">
+  <div class="chatMessage" v-if="isVisible" ref="$this">
     <span>
       <span class="messageTime">{{ time }}</span>
       <span class="userBadges">
