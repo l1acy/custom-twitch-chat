@@ -81,15 +81,15 @@ onMounted(() => {
 
   setTimeout(
     () => {
-      isVisible.value = false
-    },
-    15 * 1000
-  )
-  setTimeout(
-    () => {
       $element.classList.add('messageOut')
     },
     15 * 1000 - 250
+  )
+  setTimeout(
+    () => {
+      isVisible.value = false
+    },
+    15 * 1000
   )
 });
 </script>
