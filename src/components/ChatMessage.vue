@@ -187,6 +187,7 @@ onMounted(() => {
 .messageUsername {
   font-size: 26px;
   font-weight: 700;
+  color: #fafafa;
 }
 .spliter {
   margin-left: 2px;
