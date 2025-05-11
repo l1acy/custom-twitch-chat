@@ -27,3 +27,10 @@ button:disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
+
+hr {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  opacity: .25;
+  border-radius: 100px;
+}

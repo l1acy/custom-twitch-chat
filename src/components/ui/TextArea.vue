@@ -16,13 +16,13 @@ const emit = defineEmits(['update:modelValue']);
 <template>
     <div>
         <label :for="id">{{ label }}</label>
-    <input
+    <textarea
       :id="id"
       :placeholder="placeholder"
       :value="modelValue"
       :required="required"
       @input="emit('update:modelValue', $event.target.value)"
-    >
+    ></textarea>
     </div>
 </template>
 
@@ -35,7 +35,7 @@ div {
 label {
     color: #fafafa;
 }
-input {
+textarea {
     padding: 8px 12px;
     background-color: #09090b;
     border: 1px solid #27272a;
@@ -43,7 +43,7 @@ input {
     max-width: 400px;
     color: #fafafa;
 }
-input::placeholder {
+textarea::placeholder {
     color: #a1a19b;
 }
 </style>
