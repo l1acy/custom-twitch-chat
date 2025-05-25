@@ -2,6 +2,7 @@
 import { onMounted, ref } from "vue";
 import DOMPurify from 'dompurify'
 import badgesList from '../assets/badges.json'
+import emojiRegex from "emoji-regex";
 
 const props = defineProps({
   time: String,
@@ -75,9 +76,20 @@ function sanitizeText(text) {
     ALLOWED_ATTR: ["src", "class", "style"],
   });
 }
+function setAppleEmojs(text) {
+  const regex = emojiRegex();
+  return text.replace(regex, (emoji) => {
+    const encodedEmoji = encodeURIComponent(emoji);
+    return `<img 
+             src="https://emojicdn.elk.sh/${encodedEmoji}?style=apple" 
+             class="apple-emoji" 
+             alt="${emoji}"
+           >`;
+  });
+}
 
 onMounted(() => {
-  sanitizedText.value = sanitizeText(formatText())
+  sanitizedText.value = sanitizeText(setAppleEmojs(formatText()))
 
   setTimeout(
     () => {
@@ -224,5 +236,10 @@ onMounted(() => {
   top: 8px;
 
   animation: smile 0.3s forwards cubic-bezier(0.16, 0.24, 0, 1);
+}
+.apple-emoji {
+  width: 34px;
+  top: 8px;
+  position: relative;
 }
 </style>
