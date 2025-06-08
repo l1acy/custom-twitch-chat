@@ -1,35 +1,37 @@
-<script setup lang="ts">
-import { useRouter } from "vue-router";
+<script setup>
 import Input from "../components/ui/Input.vue";
-import { onMounted, watch } from "vue";
 import TextArea from "../components/ui/TextArea.vue";
 import MessagesExample from "../components/MessagesExample.vue";
 
-const channel = defineModel("channelName");
+import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
+
+import getItem from "../lib/storage";
+import { applyStyles } from "../lib/styles";
+import { changeChatPosition } from "../lib/styles";
+
 const css = defineModel("css");
+const chatPosition = ref(getItem('chatPosition', 'right'));
+
+const channel = defineModel("channelName");
+
 const router = useRouter();
 
 function openChat() {
   router.push({ path: "/chat/" + channel.value, replace: false });
 }
-function applyStyles() {
-  const styleElement = document.getElementById("dynamic-style");
-  if (styleElement) {
-    styleElement.textContent = css.value;
-  }
 
-  localStorage.setItem('customCss', css.value)
+function updateStyles() {
+  localStorage.setItem("customCss", css.value ?? '');
+  applyStyles(css.value ?? undefined);
+}
+function updateChatPosition(position) {
+  chatPosition.value = position
+  changeChatPosition(position)
 }
 
 onMounted(() => {
-  const styleElement = document.createElement("style");
-  styleElement.id = "dynamic-style";
-  document.head.appendChild(styleElement);
-
-  const loaded = localStorage.getItem('customCss')
-  if (loaded) {
-    styleElement.textContent = loaded
-  }
+  css.value = getItem("customCss", "")
 });
 </script>
 
@@ -48,18 +50,57 @@ onMounted(() => {
     <hr />
     <div class="inputWithButton">
       <TextArea v-model="css" label="Custom CSS" placeholder="..."></TextArea>
-      <button @click="applyStyles">Apply styles</button>
-      <MessagesExample/>
+      <button @click="updateStyles">Apply styles</button>
+      <MessagesExample class="chatExample"/>
+    </div>
+    <div class="inputWithButton chatPosition">
+      <label>Chat position</label>
+      <div class="select">
+        <button
+          :class="chatPosition == 'left' ? 'active' : ''"
+          @click="updateChatPosition('left')"
+        >
+          On left
+        </button>
+        <button
+          :class="chatPosition == 'right' ? 'active' : ''"
+          @click="updateChatPosition('right')"
+        >
+          On right
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+label {
+  color: #fafafa;
+}
+.select {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  display: inline-block;
+}
+.select > button {
+  background: none;
+}
+.select > .active {
+  background-color: #ffffff;
+}
+
 .inputWithButton {
   display: flex;
   flex-direction: column;
   max-width: 400px;
   gap: 8px;
   margin-top: 12px;
+}
+.chatPosition {
+  z-index: 999;
+  position: relative;
+}
+.chatExample {
+  z-index: 0;
 }
 </style>

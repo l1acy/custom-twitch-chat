@@ -9,7 +9,7 @@ const props = defineProps({
   badges: Array,
   username: String,
   text: String,
-  userColor: String,
+  color: String,
   emotes: String,
 });
 
@@ -17,7 +17,7 @@ const isVisible = ref(true);
 const sanitizedText = ref('')
 const $element = ref(null)
 
-function formatText() {
+function parseEmotes() {
   if (!props.emotes) return props.text;
 
   const emoteData = props.emotes.split("/").map((emote) => {
@@ -27,7 +27,7 @@ function formatText() {
     const src = emoteSplit[0];
     const placesString = emoteSplit[1];
 
-    const places = placesString.split(",").map((place) => {
+    placesString.split(",").map((place) => {
       const placeSplit = place.split("-").map(Number);
       emoteList.push({
         src: src,
@@ -49,7 +49,6 @@ function formatText() {
   emotes.sort((a, b) => a.start - b.start);
   emotes.reverse();
 
-  console.log(emotes);
 
   let formattedMessage = props.text;
   let emoteIteration = 0;
@@ -59,20 +58,15 @@ function formatText() {
       `<img src="https://static-cdn.jtvnw.net/emoticons/v2/${src}/default/dark/1.0" class="smile" style="animation-delay: 0.${emoteIteration}s">` +
       formattedMessage.slice(end + 1);
 
-    emoteIteration += 1;
+    emoteIteration++;
   });
 
   return formattedMessage;
 }
 
 function sanitizeText(text) {
-  const allowedTags = ["img"]; // Добавляем 'img' в список разрешенных тегов
-  const allowedAttributes = {
-    img: ["src"], // Добавляем 'src' в список разрешенных атрибутов для тегов img
-  };
-
   return DOMPurify.sanitize(text, {
-    ALLOWED_TAGS: allowedTags,
+    ALLOWED_TAGS:  ["img"],
     ALLOWED_ATTR: ["src", "class", "style"],
   });
 }
@@ -89,7 +83,7 @@ function setAppleEmojs(text) {
 }
 
 onMounted(() => {
-  sanitizedText.value = sanitizeText(setAppleEmojs(formatText()))
+  sanitizedText.value = sanitizeText(setAppleEmojs(parseEmotes()))
 
   setTimeout(
     () => {
@@ -114,11 +108,11 @@ onMounted(() => {
         <img
           v-for="badge in badges"
           class="badge"
-          :src="badgesList[badge]"
-          alt=""
+          :src="badgesList[badge.name]"
+          :alt="badge.name"
         />
       </span>
-      <span class="messageUsername" :style="'color: ' + userColor">{{
+      <span class="messageUsername" :style="'color: ' + color">{{
         username
       }}</span
       ><span class="spliter">: </span>
@@ -191,7 +185,10 @@ onMounted(() => {
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   padding: 20px 24px;
-  padding-top: 12px;
+  padding-top: 12px !important;
+}
+.chatMessage > span {
+  display: block;
 }
 .messageOut {
   animation: messageOut 0.25s forwards cubic-bezier(0.57, 0.03, 0, 1);
@@ -204,6 +201,7 @@ onMounted(() => {
 .spliter {
   margin-left: 2px;
   font-size: 24px;
+  color: #fafafa;
 }
 .messageText {
   font-size: 26px;
@@ -241,5 +239,9 @@ onMounted(() => {
   width: 34px;
   top: 8px;
   position: relative;
+}
+.message_reply {
+  display: flex;
+  flex-direction: row;
 }
 </style>
