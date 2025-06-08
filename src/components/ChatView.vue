@@ -111,6 +111,10 @@ function connectChat() {
       return
     }
     const data = parseMessage(msg.data)
+    if (data.fromUser == 'tmi.twitch.tv\r\n' && msg.data.split(' :')[0] == 'PING') {
+      websocket.send('PONG')
+      return
+    }
     if (data.fromUser == user) {
       return
     } 
