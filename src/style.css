@@ -15,9 +15,34 @@ body {
 }
 h1 {
   color: #fafafa;
+  font-size: 32px;
+}
+h2 {
+  color: #fafafa;
+  font-size: 24px;
+  font-weight: 600;
+}
+a {
+  color: #5d84e8;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 .card {
   padding: 24px 32px;
+}
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.spiner {
+  animation: spinner 1s infinite linear;
+  opacity: 0.5;
 }
 
 button {

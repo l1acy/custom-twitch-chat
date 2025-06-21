@@ -1,99 +1,25 @@
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import ChatMessage from "./ChatMessage.vue";
-import PointsRevard from "./PointsRevard.vue";
+
+import { validateToken, getUsers } from "../lib/twitch";
+import { parseMessage, parseSystemMessage } from "../lib/parsers";
+import getBadges from "../lib/badges";
 
 const props = defineProps({
   channel: String,
 });
 
+const badgesList = ref({});
+
 const messages = reactive([]);
-let websocket = null
+let websocket = null;
 
-const user = 'justinfan20762'
+const user = "justinfan20762";
 
-function parseMessage(msg) {
-  let tags = {
-    displayName: null,
-    text: null,
-    badges: [],
-    color: null,
-    emotes: [],
-    time: null,
-    id: null
-  }
-  let fromUser = ''
-  let channel = ''
-  let message = ''
-
-  const isStartChar = (text, char) => text[0] === char
-  const toCamelCase = (text) => {
-    const parts = text.split('-')
-    if (parts.length === 1) return text
-    const strings = parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    return strings.join('')
-  }
-  const splitText = (text, separator, limit) => {
-    const splitted = text.split(separator, limit)
-    let splittedLenght = 0
-    splitted.forEach((part) => splittedLenght = splittedLenght + part.length)
-    const otherText = text.slice(splittedLenght + limit)
-
-    splitted.push(otherText)
-    return splitted
-  }
-
-  const parts = splitText(msg, ' ', 4)
-  parts.forEach((part) => {
-    if (isStartChar(part, '@')) {
-      const splitted_tags = part.split(';')
-      splitted_tags.forEach((tag) => {
-        const tag_parts = tag.split('=')
-        if (tag_parts.length == 2) {
-          let [ key, value ] = tag_parts
-          if (key == 'badges') {
-            const badges = value.split(',').map((badge) => {
-              const [badgeName, badgeVersion] = badge.split('/')
-              return {
-                name: badgeName,
-                version: badgeVersion
-              }
-            })
-            value = badges
-          }
-          tags[toCamelCase(key)] = value
-        }
-      })
-    }
-    if (isStartChar(part, ':') && !fromUser) {
-      fromUser = part.slice(1).split('!')[0]
-    }
-    if (isStartChar(part, '#')) {
-      channel = part.slice(1)
-    }
-    if (isStartChar(part, ':') && fromUser) {
-      message = part.slice(1)
-    }
-  })
-
-  const date = new Date();
-  const minutes = String(date.getMinutes());
-  const hours = String(date.getHours());
-
-  const time = hours + ":" + (minutes.length > 1 ? minutes : `0${minutes}`);
-
-  const data = {
-    tags: tags,
-    fromUser: fromUser,
-    channel: channel,
-    message: message,
-    time: time
-  }
-  return data
-}
 function isSystemMessage(msg) {
-  const parts = msg.split(' ')
-  return parts.some(part => part == ':tmi.twitch.tv' || part == user)
+  const parts = msg.split(" ");
+  return parts.some((part) => part == ":tmi.twitch.tv" || part == user);
 }
 
 function connectChat() {
@@ -107,27 +33,87 @@ function connectChat() {
     websocket.send("JOIN #" + props.channel);
   };
   websocket.onmessage = (msg) => {
-    if (isSystemMessage(msg.data)) {
-      return
+    const data = parseMessage(msg.data, badgesList.value);
+    if (
+      ![user, "tmi.twitch.tv", `${user}.tmi.twitch.tv`].includes(
+        data.fromUser.replace("\r\n", "")
+      )
+    ) {
+      addMessage(data);
+    } else {
+      const systemMessage = parseSystemMessage(msg.data);
+
+      if (systemMessage.action === "CLEARCHAT") {
+        messages.splice(0);
+        setTimeout(
+          () =>
+            addMessage({
+              fromUser: "system",
+              message: "Chat has been cleaned",
+              tags: {
+                badges: [
+                  "https://static-cdn.jtvnw.net/badges/v1/d97c37bd-a6f5-4c38-8f57-4e4bef88af34/2",
+                ],
+                emotes: "",
+                color: "#ffffff",
+                username: "system",
+                time: "--:--",
+              },
+            }),
+          100
+        );
+      } else if (systemMessage.action === "CLEARMSG") {
+        const indexToRemove = messages.findIndex(
+          (message) => message.tags.id === systemMessage.data.TargetMsgId
+        );
+        if (indexToRemove > -1) {
+          messages.splice(indexToRemove, 1);
+        }
+      } else if (systemMessage.action === "PING") {
+        websocket.send("PONG");
+      }
     }
-    const data = parseMessage(msg.data)
-    if (data.fromUser == 'tmi.twitch.tv\r\n' && msg.data.split(' :')[0] == 'PING') {
-      websocket.send('PONG')
-      return
-    }
-    if (data.fromUser == user) {
-      return
-    } 
-    addMessage(data)
   };
 }
 function addMessage(message) {
-  messages.push(message)
+  messages.push(message);
+}
+async function checkTokenValid() {
+  const credentials = localStorage.getItem("botCredentials");
+  if (!credentials) return false;
+
+  return await validateToken(credentials);
+}
+async function getChatBadges(broadcaster_id) {
+  badgesList.value = await getBadges(broadcaster_id);
 }
 
 onMounted(() => {
-  connectChat()
-})
+  checkTokenValid().then((isValid) => {
+    if (!isValid) {
+      addMessage({
+        fromUser: "system",
+        message: "The token is invalid. Some functions will not be available",
+        tags: {
+          badges: [
+            "https://static-cdn.jtvnw.net/badges/v1/d97c37bd-a6f5-4c38-8f57-4e4bef88af34/2",
+          ],
+          emotes: "",
+          color: "#ffffff",
+          username: "system",
+          time: "--:--",
+        },
+      });
+    }
+  });
+
+  getUsers(
+    props.channel,
+    localStorage.getItem("botCredentials"),
+    localStorage.getItem("clientId")
+  ).then((json) => getChatBadges(json.data[0].id));
+  connectChat();
+});
 </script>
 
 <template>
@@ -135,10 +121,12 @@ onMounted(() => {
     <ChatMessage
       time="--:--"
       id="chatLoader"
-      username="l1acy"
-      text="Пожалуйста подождите, выполняется подключение к чату Twitch!"
+      username="system"
+      text="Please wait, connection to Twitch chat is in progress!"
       userColor="#ff0000"
-      :badges="['system']"
+      :badges="[
+        'https://static-cdn.jtvnw.net/badges/v1/d97c37bd-a6f5-4c38-8f57-4e4bef88af34/2',
+      ]"
     />
     <ChatMessage
       v-for="(message, index) in messages"
@@ -149,7 +137,8 @@ onMounted(() => {
       :color="message.tags.color"
       :emotes="message.tags.emotes"
       :time="message.time"
-      :id="message.id"
+      :highlight="message.tags.MsgId == 'highlighted-message'"
+      :id="message.tags.id"
     />
   </div>
 </template>

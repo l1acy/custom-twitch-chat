@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import DOMPurify from 'dompurify'
-import badgesList from '../assets/badges.json'
 import emojiRegex from "emoji-regex";
 
 const props = defineProps({
@@ -11,6 +10,7 @@ const props = defineProps({
   text: String,
   color: String,
   emotes: String,
+  highlight: Boolean
 });
 
 const isVisible = ref(true);
@@ -67,7 +67,7 @@ function parseEmotes() {
 function sanitizeText(text) {
   return DOMPurify.sanitize(text, {
     ALLOWED_TAGS:  ["img"],
-    ALLOWED_ATTR: ["src", "class", "style"],
+    ALLOWED_ATTR: ["src", "class", "style", "alt"],
   });
 }
 function setAppleEmojs(text) {
@@ -108,20 +108,24 @@ onMounted(() => {
         <img
           v-for="badge in badges"
           class="badge"
-          :src="badgesList[badge.name]"
-          :alt="badge.name"
+          :src="badge"
         />
       </span>
       <span class="messageUsername" :style="'color: ' + color">{{
         username
       }}</span
       ><span class="spliter">: </span>
-      <span class="messageText" v-html="sanitizedText"></span>
+      <span :class="highlight ? 'highlighted messageText' : 'messageText'" v-html="sanitizedText"></span>
     </span>
   </div>
 </template>
 
 <style>
+.highlighted {
+  background-color: #ffffff; 
+  color: #000000 !important;
+  padding: 0 10px;
+}
 @keyframes messageIn {
   0% {
     opacity: 0;

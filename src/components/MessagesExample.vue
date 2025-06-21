@@ -40,7 +40,7 @@ function addMessage() {
         {
             username: randomNicknames[Math.floor(Math.random() * randomNicknames.length)],
             message: randomMessages[Math.floor(Math.random() * randomMessages.length)],
-            badges: ['admin'],
+            badges: [],
             time: '12:34',
             id: 'ao4',
             color: '#' + randomColors[Math.floor(Math.random() * randomColors.length)]

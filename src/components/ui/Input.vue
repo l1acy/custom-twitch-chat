@@ -4,6 +4,7 @@ const props = defineProps({
   label: String,
   placeholder: String,
   modelValue: [String, Number],
+  type: String,
   required: {
     type: Boolean,
     default: false
@@ -21,8 +22,9 @@ const emit = defineEmits(['update:modelValue']);
       :placeholder="placeholder"
       :value="modelValue"
       :required="required"
+      :type="type"
       @input="emit('update:modelValue', $event.target.value)"
-    >
+    />
     </div>
 </template>
 
