@@ -1,0 +1,127 @@
+.highlighted {
+  background-color: #ffffff; 
+  color: #000000 !important;
+  padding: 0 10px;
+}
+@keyframes messageIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+@keyframes messageOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  99% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    transform: translateY(0px);
+  }
+}
+@keyframes message {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  99% {
+    opacity: 0;
+    transform: translateY(0px);
+  }
+  100% {
+    display: none;
+    opacity: 0;
+    transform: translateY(0px);
+  }
+}
+@keyframes smile {
+  0% {
+    transform: scale(0%);
+  }
+  100% {
+    transform: scale(100%);
+  }
+}
+.chatMessage {
+  transform: translateY(10px);
+  animation: messageIn 0.3s forwards cubic-bezier(0.16, 0.24, 0, 1);
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 20px 24px;
+  padding-top: 12px !important;
+}
+.chatMessage > span {
+  display: block;
+}
+.messageOut {
+  animation: messageOut 0.25s forwards cubic-bezier(0.57, 0.03, 0, 1);
+}
+.messageUsername {
+  font-size: 26px;
+  font-weight: 700;
+  color: #fafafa;
+}
+.spliter {
+  margin-left: 2px;
+  font-size: 24px;
+  color: #fafafa;
+}
+.messageText {
+  font-size: 26px;
+  font-weight: 400;
+
+  width: 100%;
+  overflow-x: hidden;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+  color: #EFEFF1;
+}
+.messageTime {
+  font-size: 26px;
+  font-weight: 400;
+  color: #adadb8;
+  margin-right: 10px;
+}
+.badge {
+  padding-right: 8px;
+  width: 34px;
+  position: relative;
+  top: 8px;
+  max-height: 34px;
+}
+.smile {
+  transform: scale(0%);
+  width: 34px;
+  position: relative;
+  top: 8px;
+
+  animation: smile 0.3s forwards cubic-bezier(0.16, 0.24, 0, 1);
+}
+.apple-emoji {
+  width: 34px;
+  top: 8px;
+  position: relative;
+}
+.message_reply {
+  display: flex;
+  flex-direction: row;
+}

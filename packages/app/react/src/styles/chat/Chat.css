@@ -1,0 +1,14 @@
+#chat {
+  position: absolute;
+  right: var(--chatRight);
+  left: var(--chatLeft);
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  max-width: 800px;
+  min-width: 300px;
+
+  overflow-y: hidden;
+}

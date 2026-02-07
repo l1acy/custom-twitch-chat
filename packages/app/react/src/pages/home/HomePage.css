@@ -1,0 +1,44 @@
+.warning {
+  background-color: rgba(215, 166, 87, 0.25);
+  padding: 12px 32px;
+  color: #ffffff;
+  border-radius: 15px;
+}
+.successful {
+  background-color: rgba(87, 215, 102, 0.25);
+  padding: 12px 32px;
+  color: #ffffff;
+  border-radius: 15px;
+}
+label {
+  color: #fafafa;
+}
+p {
+  color: rgb(189, 189, 189);
+}
+.select {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  display: inline-block;
+}
+.select > button {
+  background: none;
+}
+.select > .active {
+  background-color: #ffffff;
+}
+
+.inputWithButton {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  gap: 8px;
+  margin-top: 12px;
+}
+.chatPosition {
+  z-index: 999;
+  position: relative;
+}
+.chatExample {
+  z-index: 0;
+}
