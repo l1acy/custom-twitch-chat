@@ -10,6 +10,7 @@ interface ChatMessageProps {
   username: string;
   text: string;
   color: string;
+  id?: string;
   emotes?: string;
   highlight?: boolean;
 }
@@ -21,6 +22,7 @@ export function ChatMessage({
   text,
   color,
   emotes,
+  id,
   highlight = false,
 }: ChatMessageProps) {
   const [isVisible, setIsVisible] = useState(true);
@@ -30,6 +32,7 @@ export function ChatMessage({
   // --- парсер смайлов и эмодзи ---
   const parseEmotes = (): string => {
     if (!emotes) return text;
+    if (Array.isArray(emotes)) return emotes;
 
     const emoteData = emotes.split("/").map((emote) => {
       const emoteList: { src: string; start: number; end: number }[] = [];
@@ -64,6 +67,7 @@ export function ChatMessage({
     });
 
   const setAppleEmojis = (input: string) => {
+    if (!(typeof input === 'string')) {return input}
     const regex = emojiRegex();
     return input.replace(regex, (emoji) => {
       const encoded = encodeURIComponent(emoji);
@@ -92,7 +96,7 @@ export function ChatMessage({
   if (!isVisible) return null;
 
   return (
-    <div className={`${messageClass} ${highlight ? "highlighted" : ""}`}>
+    <div className={`${messageClass} ${highlight ? "highlighted" : ""}`} id={id}>
       <span>
         <span className="messageTime">{time}</span>
         <span className="userBadges">

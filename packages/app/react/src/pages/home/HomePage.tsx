@@ -2,25 +2,22 @@ import "./HomePage.css";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import spinner from "../../assets/spinner.svg";
+import ExampleChat from "../../components/chat/example/ExampleChat";
 import Input from "../../components/input/Input";
 import { Textarea } from "../../components/textarea/Textarea";
-import ExampleChat from "../../components/chat/example/ExampleChat";
-import spinner from "../../assets/spinner.svg";
 
-type ChatPosition = "left" | "right";
 type BotTokenStatus = "default" | "loading" | "successful" | "error";
 
 export default function HomePage() {
   const navigate = useNavigate();
 
   const [customCss, setCustomCss] = useState<string>("");
-  const [chatPosition, setChatPosition] = useState<ChatPosition>("left");
   const [channel, setChannel] = useState<string>("");
   const [clientId, setClientId] = useState<string>("");
   const [clientSecret, setClientSecret] = useState<string>("");
   const [botTokenStatus, setBotTokenStatus] =
     useState<BotTokenStatus>("default");
-  const [botToken, setBotToken] = useState<string | null>(null);
 
   useEffect(() => {
     const localStorageCss = localStorage.getItem("customCss") ?? "";
@@ -31,18 +28,7 @@ export default function HomePage() {
   function openChat() {
     navigate("/chat/" + channel, { replace: false });
   }
-  function updateChatPosition(position: ChatPosition) {
-    setChatPosition(position);
 
-    const root = document.documentElement;
-    if (position === "left") {
-      root.style.setProperty("--chatLeft", "24px");
-      root.style.setProperty("--chatRight", "auto");
-    } else {
-      root.style.setProperty("--chatLeft", "auto");
-      root.style.setProperty("--chatRight", "24px");
-    }
-  }
   function applyStyles(styles?: string) {
     let styleElement = document.getElementById("dynamic-style");
     if (!styleElement) {
@@ -124,8 +110,8 @@ export default function HomePage() {
             Create bot here
           </a>
         </p>
-        <Input label="Client Id" type="password" v-model="clientId" />
-        <Input label="Client secret" type="password" v-model="clientSecret" />
+        <Input label="Client Id" type="password" value={clientId} onChange={(e) => setClientId(e.target.value)} />
+        <Input label="Client secret" type="password" value={clientSecret} onChange={(e) => setClientSecret(e.target.value)} />
         {botTokenStatus === "successful" && (
           <span className="successful" v-if="beraerTokenStatus == 'SUCCESSFUL'">
             Token getting successful
