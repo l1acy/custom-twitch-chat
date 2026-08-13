@@ -5,6 +5,7 @@
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px 24px;
+    width: 100%;
 }
 .chat-message__time {
     font-size: 26px;

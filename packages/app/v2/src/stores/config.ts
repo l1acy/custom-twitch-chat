@@ -12,7 +12,7 @@ export interface ChatConfig {
   clientSecret: string | null;
 }
 
-const defaultConfig: ChatConfig = {
+export const defaultConfig: ChatConfig = {
   showBadges: true,
   ignoreUsernameColors: false,
   ignoreHighlight: false,

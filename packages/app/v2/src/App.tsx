@@ -5,8 +5,16 @@ import NotFoundPage from "./pages/NotFound";
 import ChatPage from "./pages/Chat";
 import StorageSync from "./components/internal/StorageSync";
 import PreviewPage from "./pages/Preview";
+import { useEffect } from "react";
+import { defaultConfig, useConfigStore } from "./stores/config";
 
 function App() {
+  useEffect(() => {
+    const stored = localStorage.getItem('custom-twitch-chat-config')
+    if (!stored) {
+      useConfigStore.getState().setConfig(defaultConfig)
+    }
+  }, [])
   return (
     <>
       <StorageSync/>

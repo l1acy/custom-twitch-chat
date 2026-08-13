@@ -1,0 +1,7 @@
+.chat-view {
+    display: flex;
+    gap: 4px;
+    padding: 20px;
+
+    position: absolute;
+}

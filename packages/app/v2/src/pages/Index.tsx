@@ -15,13 +15,17 @@ import {
 import { useConfigStore } from "@/stores/config";
 import type { ChatPosition } from "@/types/config";
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router";
 
 function IndexPage() {
   const config = useConfigStore();
 
+  const navigate = useNavigate();
+
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [customCss, setCustomCss] = useState<string>("");
   const [chatPosition, setChatPosition] = useState<ChatPosition>("left-top");
+  const [gotoChannelName, setGotoChannelName] = useState<string>('')
 
   function applyConfig() {
     config.setConfig({ customCss, chatPosition });
@@ -39,8 +43,8 @@ function IndexPage() {
       </h1>
       <h2 className="mb-1">Open chat</h2>
       <div className="flex flex-row gap-1">
-        <Input placeholder="Channel name" />
-        <Button>Go</Button>
+        <Input placeholder="Channel name" value={gotoChannelName} onChange={(e) => setGotoChannelName(e.target.value)} />
+        <Button disabled={!gotoChannelName.trim()} onClick={() => navigate('/chat/' + gotoChannelName)}>Go</Button>
       </div>
 
       <br />
